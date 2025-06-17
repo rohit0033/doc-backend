@@ -172,4 +172,61 @@ npm run dev:worker
 * **Status Tracking**: Reliable job lifecycle tracking in database
 
 
+
+## 🧠 Design Choices & Trade-offs
+
+### 1. **BullMQ for Job Queueing**
+
+**Why BullMQ:**
+We chose BullMQ (built on top of Redis) because of its robust job lifecycle tracking, delayed job support, repeatable jobs, and built-in events that make it easy to monitor background processing. It integrates well with TypeScript and is production-grade with support for retries, rate-limiting, and concurrency control.
+
+**Trade-off:**
+BullMQ requires Redis, which adds infrastructure complexity. Additionally, while great for most use cases, very high-throughput systems might benefit from dedicated message brokers like **RabbitMQ** or **Kafka** for fine-grained control and partitioning.
+
+---
+
+### 2. **PostgreSQL + Prisma ORM**
+
+**Why PostgreSQL:**
+PostgreSQL offers reliability, relational data modeling, and ACID compliance. Using Prisma ORM simplifies database access and migrations while offering type-safe queries that reduce bugs.
+
+**Trade-off:**
+While Prisma is developer-friendly, it abstracts SQL to some extent. Complex queries involving performance tuning may need raw SQL. Also, for document-heavy or schema-less use cases, a NoSQL DB like MongoDB might offer more flexibility.
+
+---
+
+### 3. **Qdrant as Vector Store**
+
+**Why Qdrant:**
+Qdrant provides high-performance vector search capabilities, is easy to self-host or use as a cloud service, and supports filtering and named collections. It allows per-job collections, ensuring document isolation.
+
+**Trade-off:**
+Spinning up a new collection per document improves traceability but might become a bottleneck at scale. An alternative could be shared collections with tagging, which would reduce overhead but add complexity in filtering.
+
+---
+
+### 4. **OpenAI for Embeddings and RAG**
+
+**Why OpenAI:**
+OpenAI's `text-embedding-ada-002` and GPT models are state-of-the-art and easy to integrate via API. They offer high accuracy for summarization, keyword extraction, and sentiment analysis.
+
+**Trade-off:**
+These APIs incur usage costs and introduce latency due to network calls. A potential alternative is to use local LLMs or open-source models with GPU acceleration, reducing cost but increasing operational complexity.
+
+---
+
+### 5. **Asynchronous Architecture**
+
+**Why Asynchronous:**
+AI analysis (especially LLM inference) can be time-consuming. Decoupling request handling from processing ensures that the API remains responsive and scalable. BullMQ helps queue and distribute the workload.
+
+**Trade-off:**
+Users must manually poll the job status, introducing complexity on the frontend. Real-time notifications (e.g., via WebSockets or Webhooks) would improve UX but add implementation overhead.
+
+---
+
+
+
+
+
 ```
