@@ -64,7 +64,7 @@ CLEANUP_VECTOR_STORE=false
 QDRANT_URL="https://your-qdrant-instance.cloud.qdrant.io"
 QDRANT_API_KEY="your-qdrant-api-key"
 
-Database Schema
+# Database Schema
 The system uses PostgreSQL with Prisma ORM. The schema includes:
 model Job {
   id        String    @id @default(uuid())
@@ -90,12 +90,15 @@ Running the Application
 Install dependencies:
 npm install
 Set up the database:
-npm run db:generate
-npm run db:push
+`npm run db:generate
+npm run db:push `
 
 Start the development server and worker:
+`npm run dev`
 
 Or run them separately:
+`npm run dev:server
+npm run dev:worker`
 
 Tech Stack
 Backend Framework: Express.js
