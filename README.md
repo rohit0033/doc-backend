@@ -65,9 +65,22 @@ QDRANT_URL="https://your-qdrant-instance.cloud.qdrant.io"
 QDRANT_API_KEY="your-qdrant-api-key"
 
 # Database Schema
-The system uses PostgreSQL with Prisma ORM. The schema includes: ` model Job { id String @id @default(uuid()) filePath String @map("file_path") status JobStatus @default(PROCESSING) summary String? topics String[] sentiment String? error String? createdAt DateTime @default(now()) @map("created_at") updatedAt DateTime @updatedAt @map("updated_at")
+### Prisma Schema – `Job` Model
 
-@@map("jobs") } ` enum JobStatus { PROCESSING COMPLETED FAILED }
+```prisma
+model Job {
+  id        String     @id @default(uuid())
+  filePath  String     @map("file_path")
+  status    JobStatus  @default(PROCESSING)
+  summary   String?
+  topics    String[]
+  sentiment String?
+  error     String?
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+}
+```
+
 Running the Application
 Install dependencies:
 npm install
