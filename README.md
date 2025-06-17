@@ -1,6 +1,4 @@
----
 
-````markdown
 # 🧠 Asynchronous Document Analyzer API
 
 This Document Analysis API provides a scalable backend system for uploading, analyzing, and extracting insights from text documents. The system utilizes a queue-based architecture for asynchronous processing, vector storage for efficient document retrieval, and an AI-powered RAG (Retrieval-Augmented Generation) system for document analysis.
