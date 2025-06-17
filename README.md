@@ -66,6 +66,7 @@ QDRANT_API_KEY="your-qdrant-api-key"
 
 # Database Schema
 The system uses PostgreSQL with Prisma ORM. The schema includes:
+`
 model Job {
   id        String    @id @default(uuid())
   filePath  String    @map("file_path")
@@ -79,7 +80,7 @@ model Job {
 
   @@map("jobs")
 }
-
+`
 enum JobStatus {
   PROCESSING
   COMPLETED
