@@ -3,7 +3,7 @@ services:
     name: doc-analyzer-api
     env: node
     plan: free
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci && npm install --save-dev @types/cors && npm run build
     startCommand: npm run start
     envVars:
       - key: NODE_ENV

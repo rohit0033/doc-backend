@@ -1,20 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
+
 import analyzeRoutes from './routes/analyzeRoutes';
 import { prisma } from './db/database';
 
-// Load environment variables
-dotenv.config();
-const result = dotenv.config();
-if (result.error) {
-  console.error('Error loading .env file:', result.error);
-}
-console.log('Environment variables loaded:', {
-  REDIS_URL_EXISTS: !!process.env.REDIS_URL,
-  REDIS_URL_LENGTH: process.env.REDIS_URL ? process.env.REDIS_URL.length : 0,
-});
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,9 +33,10 @@ app.use((error: any, req: express.Request, res: express.Response, next: express.
   });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server - explicitly bind to 0.0.0.0 to listen on all network interfaces
+app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`Health check: http://localhost:${PORT}/health`);
 });
 
