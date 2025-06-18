@@ -8,6 +8,9 @@ import { FileService } from '../services/fileService';
 export class AnalyzeController {
   static async uploadDocument(req: Request, res: Response): Promise<void> {
     try {
+      console.log("Upload request received");
+      console.log("Request file:", req.file ? "File present" : "No file found");
+      
       if (!req.file) {
         res.status(400).json({
           success: false,
