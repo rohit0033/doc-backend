@@ -17,50 +17,54 @@ console.log('Starting document worker...');
 
 const worker = new Worker<JobPayload>(
   'doc-analysis-queue',
-  async (job) => {
-    const { jobId, filePath } = job.data;
+// In the worker, update the job processing function:
+
+async (job) => {
+  const { jobId, filePath } = job.data;
+  
+  console.log(`Processing job ${jobId} with file ${filePath}`);
+
+  try {
+    // Read file content - this will upload to Supabase if it's a local path
+    const content = await FileService.readFile(filePath);
     
-    console.log(`Processing job ${jobId} with file ${filePath}`);
-
-    try {
-      // Read file content
-      const content = await FileService.readFile(filePath);
-      
-      if (!content.trim()) {
-        throw new Error('File is empty');
-      }
-
-      // Run RAG analysis with vector store
-      const result = await ragService.analyzeDocument(content, jobId);
-
-      // Update database with results
-      await DatabaseService.updateJobCompleted(jobId, result);
-
-      // Optional: Clean up file after processing
-      // await FileService.deleteFile(filePath);
-
-      console.log(`Job ${jobId} completed successfully`);
-      return result;
-
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error(`Job ${jobId} failed:`, errorMessage);
-
-      // Update database with error
-      await DatabaseService.updateJobFailed(jobId, errorMessage);
-      
-      // Ensure vector store is cleaned up even if job fails
-      try {
-        if (process.env.CLEANUP_VECTOR_STORE === 'true') {
-          await vectorStoreService.deleteCollection(jobId);
-        }
-      } catch (cleanupError) {
-        console.warn(`Failed to clean up vector store for job ${jobId}`, cleanupError);
-      }
-      
-      throw error;
+    if (!content.trim()) {
+      throw new Error('File is empty');
     }
-  },
+
+    // Run RAG analysis with vector store
+    const result = await ragService.analyzeDocument(content, jobId);
+
+    // Update database with results
+    await DatabaseService.updateJobCompleted(jobId, result);
+
+    // Optional: You can uncomment this if you want to clean up files after processing
+    // Since we're using Supabase as the primary storage, this just ensures
+    // any remaining temp files are cleaned up
+    await FileService.deleteFile(filePath);
+
+    console.log(`Job ${jobId} completed successfully`);
+    return result;
+
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`Job ${jobId} failed:`, errorMessage);
+
+    // Update database with error
+    await DatabaseService.updateJobFailed(jobId, errorMessage);
+    
+    // Ensure vector store is cleaned up even if job fails
+    try {
+      if (process.env.CLEANUP_VECTOR_STORE === 'true') {
+        await vectorStoreService.deleteCollection(jobId);
+      }
+    } catch (cleanupError) {
+      console.warn(`Failed to clean up vector store for job ${jobId}`, cleanupError);
+    }
+    
+    throw error;
+  }
+},
   { connection }
 );
 

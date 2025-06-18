@@ -16,9 +16,9 @@ export class AnalyzeController {
       }
 
       const jobId = uuidv4();
-      const filePath = req.file.path;
+      const filePath = req.file.path; // This is the temp path from multer
 
-      // Create job in database
+      // Create job in database - storing the filename only
       await DatabaseService.createJob(jobId, filePath);
 
       // Add job to queue

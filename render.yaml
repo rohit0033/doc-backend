@@ -24,6 +24,11 @@ services:
         sync: false
       - key: CLEANUP_VECTOR_STORE
         value: "false"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+
     disk:
       name: uploads
       mountPath: /opt/render/project/src/uploads
@@ -53,6 +58,11 @@ services:
         sync: false
       - key: CLEANUP_VECTOR_STORE
         value: "false"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
+
     disk:
       name: uploads
       mountPath: /opt/render/project/src/uploads
