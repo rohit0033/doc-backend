@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { documentQueue } from '../queue/queueConfig';
 import { DatabaseService } from '../db/database';
 import { ApiResponse, JobResponse } from '../types';
+import { FileService } from '../services/fileService';
 
 export class AnalyzeController {
   static async uploadDocument(req: Request, res: Response): Promise<void> {
@@ -16,9 +17,13 @@ export class AnalyzeController {
       }
 
       const jobId = uuidv4();
-      const filePath = req.file.path; // This is the temp path from multer
+      const buffer = req.file.buffer;
+      const filename = req.file.originalname;
+      
+      // Save file to Supabase directly
+      const filePath = await FileService.saveFile(buffer, filename);
 
-      // Create job in database - storing the filename only
+      // Create job in database
       await DatabaseService.createJob(jobId, filePath);
 
       // Add job to queue
