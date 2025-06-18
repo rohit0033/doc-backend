@@ -1,6 +1,6 @@
 import { Document } from 'langchain/document';
 import { OpenAIEmbeddings } from '@langchain/openai';
-import { QdrantVectorStore } from '@langchain/community/vectorstores/qdrant';
+import { QdrantVectorStore } from "@langchain/qdrant"
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import dotenv from 'dotenv';
