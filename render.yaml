@@ -28,4 +28,32 @@ services:
         sync: false
       - key: SUPABASE_KEY
         sync: false
-
+    healthCheckPath: /health
+  
+  - type: worker
+    name: doc-analyzer-worker
+    env: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: node dist/workers/documentWorker.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: UPSTASH_REDIS_PASSWORD
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: CLEANUP_VECTOR_STORE
+        value: "false"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_KEY
+        sync: false
